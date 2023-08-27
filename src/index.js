@@ -63,6 +63,10 @@ const getConsumedLocalStorageSize = () => {
     return JSON.stringify(getPersistedResponses()).length;
 };
 
+const getPersistedResponsesCount = () => {
+  return Object.keys(getPersistedResponses()).length;
+}
+
 export {
     setup,
     clearStorage,
@@ -70,4 +74,5 @@ export {
     persistPost,
     getOfflineResponse,
     getConsumedLocalStorageSize,
+    getPersistedResponsesCount,
 };

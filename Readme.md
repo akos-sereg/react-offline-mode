@@ -14,3 +14,8 @@ const response = await wrapper(axios).get('/path/to/your/api')
 ```
 
 3. add OfflineModeDevToolsWidget to your App.tsx/App.jsx
+
+## Design consideration
+
+- this package has minimal dependencies, so it relies on the packages of your project - this is helpful to avoid
+package version conflicts
