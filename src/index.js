@@ -1,4 +1,4 @@
-import { LOCAL_STORAGE_KEY } from './constants.js';
+import { LOCAL_STORAGE_KEY, LOCAL_STORAGE_KEY_STATE, mode_capturing, mode_capturing_and_serving } from './constants.js';
 
 let _localStorage;
 
@@ -16,6 +16,15 @@ const getLocalStorage = () => {
     }
 
     throw Error('localStorage not available');
+};
+
+const getMode = () => {
+  const localStorageMode = getLocalStorage().getItem(LOCAL_STORAGE_KEY_STATE);
+  if (!localStorageMode) {
+    return mode_capturing_and_serving;
+  }
+
+  return localStorageMode;
 };
 
 const getPersistedResponses = () => {
@@ -70,6 +79,7 @@ const getPersistedResponsesCount = () => {
 export {
     setup,
     clearStorage,
+    getMode,
     persistGet,
     persistPost,
     getOfflineResponse,

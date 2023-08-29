@@ -1,4 +1,5 @@
-import { persistGet, persistPost, getOfflineResponse } from "./index";
+import { persistGet, persistPost, getOfflineResponse, getMode } from "./index";
+import { mode_off, mode_capturing, mode_capturing_and_serving } from "./constants";
 
 const wrapper = (axios) => {
   const originalGet = axios.get;
@@ -8,13 +9,18 @@ const wrapper = (axios) => {
     const url = new URL(uri);
     const endpointUri = `${url.pathname}${url.search}`;
 
-    const persistedResponse = getOfflineResponse('GET', endpointUri);
-    if (persistedResponse) {
-      return persistedResponse;
+    if (getMode() === mode_capturing_and_serving) {
+      const persistedResponse = getOfflineResponse('GET', endpointUri);
+      if (persistedResponse) {
+        return persistedResponse;
+      }
     }
 
     const result = await originalGet(uri, params);
-    persistGet(endpointUri, result);
+    if (getMode() !== mode_off) {
+      persistGet(endpointUri, result);
+    }
+
     return result;
   };
 
@@ -22,13 +28,17 @@ const wrapper = (axios) => {
     const url = new URL(uri);
     const endpointUri = `${url.pathname}${url.search}`;
 
-    const persistedResponse = getOfflineResponse('POST', endpointUri);
-    if (persistedResponse) {
-      return persistedResponse;
+    if (getMode() === mode_capturing_and_serving) {
+      const persistedResponse = getOfflineResponse('POST', endpointUri);
+      if (persistedResponse) {
+        return persistedResponse;
+      }
     }
 
     const result = await originalPost(uri, data, params);
-    persistPost(endpointUri, result);
+    if (getMode() !== mode_off) {
+      persistPost(endpointUri, result);
+    }
     return result;
   };
 
