@@ -7,6 +7,7 @@ import {
   getPersistedResponsesCount,
   clearStorage,
   getPersistedResponses,
+  importPayloadCollection,
 } from './index';
 import { useEffect, useState } from "react";
 import { LOCAL_STORAGE_KEY_STATE, mode_off, mode_capturing, mode_serving, DEFAULT_QUOTA_IN_MB } from "./constants";
@@ -18,6 +19,7 @@ interface OfflineModeDevToolsWidgetProps {
 const OfflineModeDevToolsWidget = (props: OfflineModeDevToolsWidgetProps) => {
   const [mode, setMode] = useState(getMode());
   const [random, setRandom] = useState(0);
+  const [payloadCollection, setPayloadCollection] = useState('');
   const [isExportModalOpen, setExportModalOpen] = useState(false);
 
   useEffect(() => {
@@ -98,9 +100,31 @@ const OfflineModeDevToolsWidget = (props: OfflineModeDevToolsWidgetProps) => {
       { isExportModalOpen && (
         <div style={{ border: 'solid 1px ' + getBackground(), position: 'absolute', top: '100px', left: '0px', height: '200px', width: '340px', backgroundColor: '#f9f9f9', }}>
           <div style={{ padding: '5px', width: '100%', height: '28px', backgroundColor: getBackground() }}>
-            asd
+            <input
+              style={{ fontSize: '8pt', marginLeft: '5px', padding: '0px 5px 0px 5px', backgroundColor: '#ffffff', color: '#000000', borderRadius: '5px', outline: 'none' }}
+              type="button"
+              value="Import"
+              onClick={ (event) => {
+                event.preventDefault();
+                importPayloadCollection(payloadCollection);
+              }}
+            />
+            <input
+              style={{ fontSize: '8pt', float: 'right', marginLeft: '5px', padding: '0px 5px 0px 5px', backgroundColor: '#ffffff', color: '#000000', borderRadius: '5px', outline: 'none' }}
+              type="button"
+              value="Close"
+              onClick={ (event) => {
+                event.preventDefault();
+                setExportModalOpen(false);
+              }}
+            />
           </div>
-          <textarea spellCheck={false} style={{ outline: 'none', width: '100%', height: 'calc(100% - 28px)', color: '#444444', }}>{ JSON.stringify(getPersistedResponses()) }</textarea>
+          <textarea
+            onChange={(event) => setPayloadCollection(event.target.value) }
+            spellCheck={false}
+            defaultValue={JSON.stringify(getPersistedResponses())}
+            style={{ outline: 'none', width: '100%', height: 'calc(100% - 28px)', color: '#444444', }}
+          />
         </div>
       ) }
     </div>

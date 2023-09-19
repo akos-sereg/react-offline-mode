@@ -99,6 +99,15 @@ const getQuota = () => {
   return quota;
 };
 
+const importPayloadCollection = (payloadCollection) => {
+  if (payloadCollection.length / 1024 / 1024 > getQuota()) {
+    console.warn('Could not import: payload collection size exceeds quota');
+    return;
+  }
+
+  getLocalStorage().setItem(LOCAL_STORAGE_KEY, payloadCollection);
+};
+
 const getPersistedResponsesCount = () => {
   return Object.keys(getPersistedResponses()).length;
 };
@@ -115,4 +124,5 @@ export {
   getConsumedLocalStorageSize,
   getPersistedResponsesCount,
   getPersistedResponses,
+  importPayloadCollection,
 };
