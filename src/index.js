@@ -1,4 +1,10 @@
-import { LOCAL_STORAGE_KEY, LOCAL_STORAGE_KEY_STATE, mode_capturing, mode_serving } from './constants.js';
+import {
+  LOCAL_STORAGE_KEY_QUOTA,
+  LOCAL_STORAGE_KEY,
+  LOCAL_STORAGE_KEY_STATE,
+  mode_serving,
+  DEFAULT_QUOTA_IN_MB,
+} from './constants.js';
 
 let _localStorage;
 
@@ -28,24 +34,32 @@ const getMode = () => {
 };
 
 const getPersistedResponses = () => {
-    const persistedResponses = getLocalStorage().getItem(LOCAL_STORAGE_KEY);
+  const persistedResponses = getLocalStorage().getItem(LOCAL_STORAGE_KEY);
 
-    if (!persistedResponses) {
-        return {};
-    }
+  if (!persistedResponses) {
+      return {};
+  }
 
-    return JSON.parse(persistedResponses);
+  return JSON.parse(persistedResponses);
 };
 
 const persistGet = (uri, responsePayload) => {
-    const persistedResponses = getPersistedResponses();
-    persistedResponses[`GET ${uri}`] = responsePayload;
+  if (getConsumedLocalStorageSize() / 1024 / 1024 > getQuota()) {
+    return;
+  }
 
-    console.log(`[offline mode] persist GET ${uri}`);
-    getLocalStorage().setItem(LOCAL_STORAGE_KEY, JSON.stringify(persistedResponses));
+  const persistedResponses = getPersistedResponses();
+  persistedResponses[`GET ${uri}`] = responsePayload;
+
+  console.log(`[offline mode] persist GET ${uri}`);
+  getLocalStorage().setItem(LOCAL_STORAGE_KEY, JSON.stringify(persistedResponses));
 };
 
 const persistPost = (uri, responsePayload) => {
+  if (getConsumedLocalStorageSize() / 1024 / 1024 > getQuota()) {
+    return;
+  }
+
   const persistedResponses = getPersistedResponses();
   persistedResponses[`POST ${uri}`] = responsePayload;
 
@@ -72,17 +86,32 @@ const getConsumedLocalStorageSize = () => {
     return JSON.stringify(getPersistedResponses()).length;
 };
 
+const setQuota = (quotaInMb) => {
+  getLocalStorage().setItem(LOCAL_STORAGE_KEY_QUOTA, quotaInMb);
+};
+
+const getQuota = () => {
+  const quota = getLocalStorage().getItem(LOCAL_STORAGE_KEY_QUOTA);
+  if (!quota) {
+    return DEFAULT_QUOTA_IN_MB;
+  }
+
+  return quota;
+};
+
 const getPersistedResponsesCount = () => {
   return Object.keys(getPersistedResponses()).length;
-}
+};
 
 export {
-    setup,
-    clearStorage,
-    getMode,
-    persistGet,
-    persistPost,
-    getOfflineResponse,
-    getConsumedLocalStorageSize,
-    getPersistedResponsesCount,
+  setup,
+  setQuota,
+  getQuota,
+  clearStorage,
+  getMode,
+  persistGet,
+  persistPost,
+  getOfflineResponse,
+  getConsumedLocalStorageSize,
+  getPersistedResponsesCount,
 };
