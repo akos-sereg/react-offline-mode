@@ -10,6 +10,7 @@ import {
   importPayloadCollection,
 } from './index';
 import { useEffect, useState } from "react";
+import wrapper from './axios-wrapper';
 import { LOCAL_STORAGE_KEY_STATE, mode_off, mode_capturing, mode_serving, DEFAULT_QUOTA_IN_MB } from "./constants";
 
 interface OfflineModeDevToolsWidgetProps {
@@ -107,6 +108,7 @@ const OfflineModeDevToolsWidget = (props: OfflineModeDevToolsWidgetProps) => {
               onClick={ (event) => {
                 event.preventDefault();
                 importPayloadCollection(payloadCollection);
+                setExportModalOpen(false);
               }}
             />
             <input

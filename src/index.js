@@ -51,7 +51,7 @@ const persistGet = (uri, responsePayload) => {
   const persistedResponses = getPersistedResponses();
   persistedResponses[`GET ${uri}`] = responsePayload;
 
-  console.log(`[offline mode] persist GET ${uri}`);
+  console.log(`persist GET ${uri}`);
   getLocalStorage().setItem(LOCAL_STORAGE_KEY, JSON.stringify(persistedResponses));
 };
 
@@ -63,7 +63,7 @@ const persistPost = (uri, responsePayload) => {
   const persistedResponses = getPersistedResponses();
   persistedResponses[`POST ${uri}`] = responsePayload;
 
-  console.log(`[offline mode] persist POST ${uri}`);
+  console.log(`persist POST ${uri}`);
   getLocalStorage().setItem(LOCAL_STORAGE_KEY, JSON.stringify(persistedResponses));
 };
 
@@ -72,7 +72,7 @@ const getOfflineResponse = (method, uri) => {
     const response = persistedResponses[`${method} ${uri}`] ?? null;
 
     if (response) {
-      console.log(`[offline mode] serve: ${uri}`);
+      console.log(`serve: ${uri}`);
     }
 
     return response;
