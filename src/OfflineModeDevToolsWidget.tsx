@@ -18,6 +18,7 @@ interface OfflineModeDevToolsWidgetProps {
 }
 
 const OfflineModeDevToolsWidget = (props: OfflineModeDevToolsWidgetProps) => {
+  const [isWidgetVisible, setWidgetVisible] = useState(true);
   const [mode, setMode] = useState(getMode());
   const [random, setRandom] = useState(0);
   const [payloadCollection, setPayloadCollection] = useState('');
@@ -55,7 +56,7 @@ const OfflineModeDevToolsWidget = (props: OfflineModeDevToolsWidgetProps) => {
     }
   }
 
-  return (
+  return isWidgetVisible && (
     <div data-random={ random } style={{
       position: 'fixed',
       top: '20px',
@@ -68,6 +69,9 @@ const OfflineModeDevToolsWidget = (props: OfflineModeDevToolsWidgetProps) => {
       width: '280px',
       fontSize: '9pt'
     }}>
+      <div style={{ cursor: 'pointer', position: 'absolute', right: '5px', top: '2px' }}>
+        <span data-qa="offline-mode-close" onClick={() => setWidgetVisible(false)}>x</span>
+      </div>
       <span>{ getPersistedResponsesCount() } api calls captured ({ (getConsumedLocalStorageSize() / 1024 / 1024).toFixed(2) } MB / { getQuota() } MB)</span>
       <div>
         <br/>
@@ -91,6 +95,7 @@ const OfflineModeDevToolsWidget = (props: OfflineModeDevToolsWidgetProps) => {
         <input
           style={{ marginLeft: '5px', padding: '3px 10px 3px 10px', backgroundColor: '#ffffff', color: '#000000', borderRadius: '5px', outline: 'none' }}
           type="button"
+          data-qa="offline-mode-export-import"
           value="Export & Import"
           onClick={ (event) => {
             event.preventDefault();
@@ -102,9 +107,10 @@ const OfflineModeDevToolsWidget = (props: OfflineModeDevToolsWidgetProps) => {
         <div style={{ border: 'solid 1px ' + getBackground(), position: 'absolute', top: '100px', left: '0px', height: '200px', width: '340px', backgroundColor: '#f9f9f9', }}>
           <div style={{ padding: '5px', width: '100%', height: '28px', backgroundColor: getBackground() }}>
             <input
-              style={{ fontSize: '8pt', marginLeft: '5px', padding: '0px 5px 0px 5px', backgroundColor: '#ffffff', color: '#000000', borderRadius: '5px', outline: 'none' }}
+              style={{ fontSize: '8pt', marginLeft: '5px', padding: '0px 5px 0px 5px', backgroundColor: '#ffffff', color: '#000000', borderRadius: '3px', outline: 'none' }}
               type="button"
               value="Import"
+              data-qa="offline-mode-do-import"
               onClick={ (event) => {
                 event.preventDefault();
                 importPayloadCollection(payloadCollection);
@@ -112,7 +118,7 @@ const OfflineModeDevToolsWidget = (props: OfflineModeDevToolsWidgetProps) => {
               }}
             />
             <input
-              style={{ fontSize: '8pt', float: 'right', marginLeft: '5px', padding: '0px 5px 0px 5px', backgroundColor: '#ffffff', color: '#000000', borderRadius: '5px', outline: 'none' }}
+              style={{ fontSize: '8pt', float: 'right', marginLeft: '5px', padding: '0px 5px 0px 5px', backgroundColor: '#ffffff', color: '#000000', borderRadius: '3px', outline: 'none' }}
               type="button"
               value="Close"
               onClick={ (event) => {
@@ -125,7 +131,7 @@ const OfflineModeDevToolsWidget = (props: OfflineModeDevToolsWidgetProps) => {
             onChange={(event) => setPayloadCollection(event.target.value) }
             spellCheck={false}
             defaultValue={JSON.stringify(getPersistedResponses())}
-            style={{ outline: 'none', width: '100%', height: 'calc(100% - 28px)', color: '#444444', }}
+            style={{ resize: 'none', outline: 'none', width: '100%', height: 'calc(100% - 28px)', color: '#444444', }}
           />
         </div>
       ) }
