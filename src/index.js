@@ -114,4 +114,5 @@ export {
   getOfflineResponse,
   getConsumedLocalStorageSize,
   getPersistedResponsesCount,
+  getPersistedResponses,
 };

@@ -5,7 +5,8 @@ import {
   getConsumedLocalStorageSize,
   getMode,
   getPersistedResponsesCount,
-  clearStorage
+  clearStorage,
+  getPersistedResponses,
 } from './index';
 import { useEffect, useState } from "react";
 import { LOCAL_STORAGE_KEY_STATE, mode_off, mode_capturing, mode_serving, DEFAULT_QUOTA_IN_MB } from "./constants";
@@ -17,6 +18,7 @@ interface OfflineModeDevToolsWidgetProps {
 const OfflineModeDevToolsWidget = (props: OfflineModeDevToolsWidgetProps) => {
   const [mode, setMode] = useState(getMode());
   const [random, setRandom] = useState(0);
+  const [isExportModalOpen, setExportModalOpen] = useState(false);
 
   useEffect(() => {
     setQuota(props.quotaInMb ?? DEFAULT_QUOTA_IN_MB);
@@ -60,7 +62,7 @@ const OfflineModeDevToolsWidget = (props: OfflineModeDevToolsWidgetProps) => {
       borderRadius: '5px',
       boxShadow: '2px 2px 5px 1px rgba(0,0,0,0.35)',
       padding: '12px',
-      width: '240px',
+      width: '280px',
       fontSize: '9pt'
     }}>
       <span>{ getPersistedResponsesCount() } api calls captured ({ (getConsumedLocalStorageSize() / 1024 / 1024).toFixed(2) } MB / { getQuota() } MB)</span>
@@ -75,14 +77,32 @@ const OfflineModeDevToolsWidget = (props: OfflineModeDevToolsWidgetProps) => {
         </select>
         <input
           style={{ marginLeft: '5px', padding: '3px 10px 3px 10px', backgroundColor: '#ffffff', color: '#000000', borderRadius: '5px', outline: 'none' }}
-          type="button" value="Clear"
+          type="button"
+          value="Clear"
           onClick={ (event) => {
             event.preventDefault();
             clearStorage();
             setRandom(Math.random());
           }}
         />
+        <input
+          style={{ marginLeft: '5px', padding: '3px 10px 3px 10px', backgroundColor: '#ffffff', color: '#000000', borderRadius: '5px', outline: 'none' }}
+          type="button"
+          value="Export & Import"
+          onClick={ (event) => {
+            event.preventDefault();
+            setExportModalOpen(true);
+          }}
+        />
       </div>
+      { isExportModalOpen && (
+        <div style={{ border: 'solid 1px ' + getBackground(), position: 'absolute', top: '100px', left: '0px', height: '200px', width: '340px', backgroundColor: '#f9f9f9', }}>
+          <div style={{ padding: '5px', width: '100%', height: '28px', backgroundColor: getBackground() }}>
+            asd
+          </div>
+          <textarea spellCheck={false} style={{ outline: 'none', width: '100%', height: 'calc(100% - 28px)', color: '#444444', }}>{ JSON.stringify(getPersistedResponses()) }</textarea>
+        </div>
+      ) }
     </div>
   );
 }
