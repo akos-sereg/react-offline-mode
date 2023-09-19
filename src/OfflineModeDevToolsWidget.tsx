@@ -1,15 +1,14 @@
 import * as React from "react";
 import { getConsumedLocalStorageSize, getMode, getPersistedResponsesCount } from './index';
 import { useEffect, useState } from "react";
-import { LOCAL_STORAGE_KEY_STATE, mode_off, mode_capturing, mode_capturing_and_serving } from "./constants";
+import { LOCAL_STORAGE_KEY_STATE, mode_off, mode_capturing, mode_serving } from "./constants";
 
 const OfflineModeDevToolsWidget = () => {
 
   const [mode, setMode] = useState(getMode());
 
   // @ts-ignore
-  const handleModeSelection = (event, mode) => {
-      event.preventDefault();
+  const handleModeSelection = (mode) => {
       setMode(mode);
       localStorage.setItem(LOCAL_STORAGE_KEY_STATE, mode);
   }
@@ -31,9 +30,13 @@ const OfflineModeDevToolsWidget = () => {
       <div>
         <br/>
         mode:&nbsp;
-        <a href="#" onClick={(event) => handleModeSelection(event, mode_off)} style={{ fontSize: '9pt', color: '#cccccc', textDecoration: mode === mode_off ? 'none' : 'underline' }}>off</a>&nbsp;|&nbsp;
-        <a href="#" onClick={(event) => handleModeSelection(event, mode_capturing)} style={{ fontSize: '9pt', color: '#cccccc', textDecoration: mode === mode_capturing ? 'none' : 'underline' }}>capturing</a>&nbsp;|&nbsp;
-        <a href="#" onClick={(event) => handleModeSelection(event, mode_capturing_and_serving)} style={{ fontSize: '9pt', color: '#cccccc', textDecoration: mode === mode_capturing_and_serving ? 'none' : 'underline' }}>serving</a>
+        <select
+          onChange={(event) => handleModeSelection(event.target.value) }
+          style={{ backgroundColor: '#ffffff', color: '#000000', borderRadius: '5px', outline: 'none' }}>
+          <option value="mode_off">Off</option>
+          <option value="mode_capturing">Capturing</option>
+          <option value="mode_serving">Serving</option>
+        </select>
       </div>
     </div>
   );

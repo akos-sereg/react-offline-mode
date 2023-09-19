@@ -1,4 +1,4 @@
-import { LOCAL_STORAGE_KEY, LOCAL_STORAGE_KEY_STATE, mode_capturing, mode_capturing_and_serving } from './constants.js';
+import { LOCAL_STORAGE_KEY, LOCAL_STORAGE_KEY_STATE, mode_capturing, mode_serving } from './constants.js';
 
 let _localStorage;
 
@@ -21,7 +21,7 @@ const getLocalStorage = () => {
 const getMode = () => {
   const localStorageMode = getLocalStorage().getItem(LOCAL_STORAGE_KEY_STATE);
   if (!localStorageMode) {
-    return mode_capturing_and_serving;
+    return mode_serving;
   }
 
   return localStorageMode;
